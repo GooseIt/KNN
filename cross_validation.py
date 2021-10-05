@@ -1,5 +1,3 @@
-import sys
-
 import numpy as np
 from nearest_neighbors import KNNClassifier
 
@@ -23,17 +21,15 @@ def knn_cross_val_score(X, y, k_list, score, cv, **kwargs):
         ans = []
         if cv is None:
             cv = kfold(X.shape[0], 3)
+        # print(cv, '<- OMG LOOK AT THAT DANK CV!!!@_@')
         k_dict = {}
-        maxk = sys.float_info.min
         for k in k_list:
-            if k > maxk:
-                maxk = k
-        knn_classifier = KNNClassifier(k=maxk, **kwargs)
-        ans = []
-        for pair in cv:
-            knn_classifier.fit(X[pair[0]], y[pair[0]])
-            X_pred = knn_classifier.predict(X[pair[1]])
-            ans.append(accuracy(X_pred, y[pair[1]]))
+            knn_classifier = KNNClassifier(k=k, **kwargs)
+            ans = []
+            for pair in cv:
+                knn_classifier.fit(X[pair[0]], y[pair[0]])
+                X_pred = knn_classifier.predict(X[pair[1]])
+                ans.append(accuracy(X_pred, y[pair[1]]))
             k_dict[k] = np.array(ans)
         return k_dict
     return None
